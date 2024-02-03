@@ -2,7 +2,7 @@
 
 
 
-## flysecret.sh Script Documentation
+### flysecret.sh Script Documentation
 
 This script is used to interact with secrets on fly.io. It provides functions to set, delete, and show secrets for a specific app.
 
