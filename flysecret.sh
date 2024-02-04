@@ -1,16 +1,35 @@
 #!/bin/bash
 
+# This script is used to get the all the applications on fly.io
+getAppList() {
+  applist=()
+  apps=$(fly app list)
+  applist+=($(echo "$apps" | awk '{print $1}'))
+  unset applist[0]
+  echo ${applist[@]}
+}
+
 # This script is used to set secrets on fly.io
 setSecret() {
 
-  read -p "Enter the app name: " appname
+  appname=""
+  appList=$(getAppList)
+  PS3="------------- "$'\n'"Enter the number: "
 
-  if [ -z "$appname" ]; then
-    echo "App name is required"
-    exit 1
-  fi
+  select app in ${appList[@]}; do
+    echo "----------------------------------------"
+    if [ -z "$app" ]; then
+      echo "Invalid app name"
+      exit 1
+    fi
+    appname=$app
+    break
+  done
 
   params=()
+  echo "----------------------------------------"
+  echo "Enter without any value to the next step"
+  echo "----------------------------------------"
 
   while true; do
     read -p "Enter the name: " name
@@ -33,8 +52,8 @@ setSecret() {
   echo "Processing..."
   fly secrets set -a $appname ${params[@]}
   echo "Secret added successfully"
-  read -p "Do you want to deploy the secrets? (y/n): " response
-  if [ "$response" == "y" ]; then
+  read -p "Do you want to deploy the secrets? (y/n): " answer
+  if [ "$answer" == "y" ]; then
     fly secrets deploy -a $appname
   fi
 
@@ -43,14 +62,24 @@ setSecret() {
 # This script is used to delete secrets on fly.io
 
 deleteSecret() {
-  read -p "Enter the app name: " appname
+  appname=""
+  appList=$(getAppList)
+  PS3="------------- "$'\n'"Enter the number: "
 
-  if [ -z "$appname" ]; then
-    echo "App name is required"
-    exit 1
-  fi
+  select app in ${appList[@]}; do
+    echo "----------------------------------------"
+    if [ -z "$app" ]; then
+      echo "Invalid app name"
+      exit 1
+    fi
+    appname=$app
+    break
+  done
 
   params=()
+  echo "----------------------------------------"
+  echo "Enter without any value to the next step"
+  echo "----------------------------------------"
 
   while true; do
     read -p "Enter the name: " name
@@ -68,31 +97,35 @@ deleteSecret() {
   echo "Processing..."
   fly secrets unset -a $appname ${params[@]}
   echo "Secret deleted successfully"
-  read -p "Do you want to deploy the secrets? (y/n): " response
-  if [ "$response" == "y" ]; then
+  read -p "Do you want to deploy the secrets? (y/n): " answer
+  if [ "$answer" == "y" ]; then
     fly secrets deploy -a $appname
   fi
 }
 
 # This script is used to show the list of secrets on fly.io
 showSecret() {
-  read -p "Enter the app name: " appname
+  appList=$(getAppList)
+  PS3="------------- "$'\n'"Enter the number: "
 
-  if [ -z "$appname" ]; then
-    echo "App name is required"
-    exit 1
-  fi
+  select app in ${appList[@]}; do
+    if [ -z "$app" ]; then
+      echo "Invalid app name"
+      break
+    fi
+    echo "Processing..."
+    fly secrets list -a $app
+    break
+  done
 
-  echo "Processing..."
-  fly secrets list -a $appname
 }
 
-read -p "Select an option? (set/delete/show): " response
+read -p "Select an option? (set/delete/show): " answer
 
-if [ "$response" == "set" ]; then
+if [ "$answer" == "set" ]; then
   setSecret
-elif [ "$response" == "delete" ]; then
+elif [ "$answer" == "delete" ]; then
   deleteSecret
-elif [ "$response" == "show" ]; then
+elif [ "$answer" == "show" ]; then
   showSecret
 fi
