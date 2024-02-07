@@ -1,6 +1,7 @@
 `curl https://raw.githubusercontent.com/chittiapp/scripts/main/docker.sh | sudo sh`
 
 
+# scripts
 
 ### flysecret.sh Script Documentation
 
@@ -13,18 +14,14 @@ To use this script, follow these steps:
 1. Make sure you have the `fly` CLI installed and configured.
 2. Run the script using the following command:
 
- ```shell
-./flysecret.sh
-./flylog.sh
-```
-
-### Global Access
-
-Go to the file directory
-
 ```shell
-sudo cp ./flysecret.sh /usr/local/bin
-sudo cp ./flylog.sh /usr/local/bin
+change permission into chmod +x ./install-mac.sh (or)
+change permission into chmod +x ./install-linux.sh
+
+sudo ./flyscript/install-mac.sh (or)
+sudo ./flyscript/install-linux.sh
 ```
+
+now will access anyware from terminal (flysecret / flylog)
 
 <img width="648" alt="Screenshot 2024-02-03 at 11 45 22 PM" src="https://github.com/chittiapp/scripts/assets/131455579/ff7b8d8d-0933-449e-a297-e43aaa9fe92b">
